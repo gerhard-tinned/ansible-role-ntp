@@ -8,20 +8,27 @@
   include_vars: "{{ ansible_os_family }}.yml"
 
 - name: Ensure that required packages are installed (EL)
-  yum: name={{ item }} state={{ ntp_package_state }}
-  with_items: "{{ ntp_packages }}"
+  yum: 
+    name: "{{ ntp_packages }}" 
+    state: "{{ ntp_package_state }}"
   when: ansible_os_family == 'RedHat'
 
 - name: Ensure that required packages are installed (Debian)
-  apt: name={{ item }} state={{ ntp_package_state }}
-  with_items: "{{ ntp_packages }}"
+  apt: 
+    name: "{{ ntp_packages }}"
+    state: "{{ ntp_package_state }}"
   environment: "{{ env }}"
   when: ansible_os_family == 'Debian'
 
 - name: Install the configuration file into /etc/ntp.conf
-  template: src=ntp.conf.j2 dest={{ ntp_config_file }}
+  template: 
+    src: "ntp.conf.j2" 
+    dest: "{{ ntp_config_file }}"
   notify:
    - restart ntp
 
 - name: Manage the state of the NTP service
-  service: name={{ ntp_service_name }} state={{ ntp_service_state }} enabled={{ ntp_service_enabled }}
+  service: 
+    name: "{{ ntp_service_name }}" 
+    state: "{{ ntp_service_state }}" 
+    enabled: "{{ ntp_service_enabled }}"
